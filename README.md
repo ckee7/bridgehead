@@ -62,3 +62,4 @@ o	Minimum Viable Product completed by EOW that will include:
 	Ability to set-up virtual meetings
 -	Week of 12Dec
 o	Final Checks and completing all items
+
