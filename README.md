@@ -7,7 +7,7 @@ Create a Recruiting website that has the ability to intake candidates and employ
 -	Recruiting and Hiring Website: Fill out a Form for employee and employer
 -	Problem this Project will Solve: recruiting and hiring process for a company
 -	Libraries / Frameworks:
-    -    Django
+    -   Django
     -   Vue
     -   Rest Framework
     -   Will need geo API

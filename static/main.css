@@ -1,0 +1,12 @@
+/* standard code */
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+/* end of standard code */
+
+body {
+    background-color: bisque;
+}
