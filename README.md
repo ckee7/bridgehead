@@ -1,7 +1,7 @@
 # Proposal:
 Create a Recruiting website that has the ability to intake candidates and employers while seamlessly storing pertinent information for both parties to find a mutual match. The project should be a minimum viable product - with the ability to scale into companies, or work as a standalone website.  The following outline is an overview of the project plan and what the mvp should like in three weeks. 
 
-## Project Name: Neptune Strike
+## Project Name: Bridgehead
 
 ## Project Overview: 
 -	Recruiting and Hiring Website: Fill out a Form for employee and employer
