@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Employer{% endblock %}
+
+{% block content %}
+{% if user.company_admin %}
+    Hi {{ user.username }}!
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a> |
+    <a href="{% url 'signup' %}">Sign Up</a>
+{% endif %}
+    <div id="bridgeApp">
+        <ul>
+            <li v-for="job in bridgehead_app">
+                <h4>{{ job.job_title }}</h4>
+            </li>
+        </ul>    
+    </div>
+    {{user}}
+{% endblock %}
