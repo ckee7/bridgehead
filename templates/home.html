@@ -3,12 +3,33 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
+    <div id="app1">
+{% if user.recruiter %}
     Hi {{ user.username }}!
     <p><a href="{% url 'logout' %}">Log Out</a></p>
+    <h3>Would you like ot create a Job?</h3>
+    {% comment %} <the-component-name></the-component-name> {% endcomment %}
+    <create-job-block 
+        @create-job-global = "createJob"
+    > </create-job-block>
+{% elif user.is_authenticated %}
+    Hi {{ user.username }}!
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+        <div v-if="joblist.length">
+            <h3>Job List</h3>
+            <ul>
+                <job-block 
+                v-for="job in joblist" 
+                v-bind:job="job" 
+                v-bind:key="job.id">
+                </job-block>
+            </ul>
+        </div>
+
 {% else %}
     <p>You are not logged in</p>
     <a href="{% url 'login' %}">Log In</a> |
     <a href="{% url 'signup' %}">Sign Up</a>
 {% endif %}
+    </div>
 {% endblock %}

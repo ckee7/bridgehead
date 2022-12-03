@@ -1,5 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from bridgehead_project.settings import AUTH_USER_MODEL
 import uuid
 
 # Create your models here.
@@ -33,6 +34,7 @@ class Job(models.Model):
     job_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     job_description = models.TextField(max_length=2500)
     created_at = models.DateTimeField(auto_now_add=True)
+    related_employer = models.ForeignKey(AUTH_USER_MODEL, related_name="jobs", on_delete=models.CASCADE)
     candidate_applied = models.BooleanField(default=False)
 
     def __str__(self):
