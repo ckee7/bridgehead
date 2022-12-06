@@ -31,14 +31,13 @@ class Job(models.Model):
         max_length=2,
         choices=JOB_TYPE_CHOICES,
     )
-    job_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     job_description = models.TextField(max_length=2500)
     created_at = models.DateTimeField(auto_now_add=True)
-    related_employer = models.ForeignKey(AUTH_USER_MODEL, related_name="jobs", on_delete=models.CASCADE)
-    candidate_applied = models.BooleanField(default=False)
+    recruiter = models.ForeignKey(AUTH_USER_MODEL, related_name="jobs", on_delete=models.CASCADE)
+  
 
     def __str__(self):
-        return str(self.job_id)[0:6] + ", " + self.job_title
+        return str(self.id) + ", " + self.job_title
 
 class Candidate(models.Model):
     candidate_last_name = models.CharField(max_length=50)

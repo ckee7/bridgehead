@@ -3,6 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% csrf_token %}
     <div id="app1">
 {% if user.recruiter %}
     Hi {{ user.username }}!
@@ -12,9 +13,33 @@
     <create-job-block 
         @create-job-global = "createJob"
     > </create-job-block>
+    <div v-if="joblist.length">
+        <h3>Jobs Posting</h3>
+        <ul>
+            <list-edit-delete-block 
+            v-for="job in joblist" 
+            v-bind:job="job" 
+            v-bind:key="job.id"
+            @edit-job-global = "updateJob"
+            @delete-job-global = "deleteJob">
+            </list-edit-delete-block>
+        </ul>
+    </div>
 {% elif user.is_authenticated %}
     Hi {{ user.username }}!
     <p><a href="{% url 'logout' %}">Log Out</a></p>
+        <input type="text" v-model="inputText" size="50">
+        <button v-on:click="searchJobs">Search Keyword</button>
+        <div v-if="searchJobsList.length">
+            <h3>This is your search term: {{ currentSearch }}</h3>
+            <ul>
+                <job-block 
+                v-for="job in joblist" 
+                v-bind:job="job" 
+                v-bind:key="job.id">
+                </job-block>
+            </ul>
+        </div>
         <div v-if="joblist.length">
             <h3>Job List</h3>
             <ul>

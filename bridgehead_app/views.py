@@ -9,6 +9,7 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = JobSerializer
     # permission_classes = [IsAuthenticated, IsRecruiter, IsCandidate]
 
+#DISREGARD BELOW
 # class ListJob(generics.ListCreateAPIView):
 #     job = Job.objects.all()
 #     queryset = job
