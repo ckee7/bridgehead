@@ -253,12 +253,12 @@ const vue = new Vue({
             this.searchJobsList = []
             axios({
                 method: "GET",
-                url: "http://localhost:8000/bridgehead_app/search/?q=bunbun",
+                url: "http://localhost:8000/bridgehead_app/search/",
                 params: {
-                    // how do i find this out?
+                    q: this.currentSearch
                 },
             }).then((response) => {
-            //   console.log(response)
+            console.log(response.data)
               this.searchJobsList = response.data
             }).catch(error => {
                 console.log('error.response: ', error.response)
