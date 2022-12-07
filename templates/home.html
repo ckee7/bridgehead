@@ -10,19 +10,30 @@
     <p><a href="{% url 'logout' %}">Log Out</a></p>
     <h3>Would you like ot create a Job?</h3>
     {% comment %} <the-component-name></the-component-name> {% endcomment %}
-    <create-job-block 
-        @create-job-global = "createJob"
-    > </create-job-block>
+    <button @click="toggleCreateJobBlock" v-if="!showCreateJobBlock">Create a Job</button>
+    <button @click="toggleCreateJobBlock" v-if="showCreateJobBlock">Hide Create</button>
+    <div>
+        <create-job-block 
+            @create-job-global = "createJob"
+            v-if="showCreateJobBlock"
+        > </create-job-block>
+    </div>
+    {% comment %} <button @click=showDetailJobView>Show Edit</button> [[ showEditJobBlock ]] {% endcomment %}
+    <update-job-block 
+        v-if="showEditJobBlock"
+        v-bind:single-job=singleDetailJob
+        @edit-single-job-global = "updateJob">
+    </update-job-block>
     <div v-if="joblist.length">
         <h3>Jobs Posting</h3>
         <ul>
-            <list-edit-delete-block 
+            <list-jobs-block 
             v-for="job in joblist" 
             v-bind:job="job" 
             v-bind:key="job.id"
-            @edit-job-global = "updateJob"
+            @edit-job-global = "showDetailJobView"
             @delete-job-global = "deleteJob">
-            </list-edit-delete-block>
+            </list-jobs-block>
         </ul>
     </div>
 {% elif user.is_authenticated %}

@@ -3,6 +3,7 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
+<a href={% url "home" %}>Home</a>
 <h2>Sign Up</h2>
 <form method="post">
     {% csrf_token %}

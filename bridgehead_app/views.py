@@ -3,13 +3,29 @@ from .models import Job
 from .serializers import JobSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsRecruiter, IsCandidate
+from rest_framework.decorators import action
 
 class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
+    @action(detail=False)
+    def search(self, request):
+        print(request)
+        print(request.query_params)
+        print(request.query_params["q"])
     # permission_classes = [IsAuthenticated, IsRecruiter, IsCandidate]
 
 #DISREGARD BELOW
+
+# class SearchJobViewSet(viewsets.ModelViewSet):
+#     queryset = Job.objects.filter(job_description__contains="robust")
+#     serializer_class = JobSerializer
+#     @action(detail=False)
+#     def search(self, request):
+#         print(request)
+#         print(request.query_params)
+#         print(request.query_params["q"])
+
 # class ListJob(generics.ListCreateAPIView):
 #     job = Job.objects.all()
 #     queryset = job
