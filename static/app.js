@@ -11,13 +11,13 @@ Vue.component('job-block', {
         <h4>Job Type: {{job.job_type}}</h4>
         <p>Job Description: {{job.job_description}}</p>
         <h5>Job I.D.: {{job.id}}</h5>
-        <button v-on:click="jobApply">Apply</button>
+        <button v-on:click="jobApply(job)">Apply</button>
     </li>`,
     methods: {
-        jobApply: function () {
+        jobApply: function (localJobVar) {
             console.log("WE are applying for a job!")
             this.$emit("apply-job-global", {
-                // how do i pass candidate information here to employer
+                jobby: localJobVar
             }) 
         }
     }
@@ -248,15 +248,15 @@ const app = new Vue({
                 this.getJobs()
             })
         },
-        listJobs: function() {
-            axios({
-                method: "GET",
-                url: "http://localhost:8000/bridgehead_app/jobs/",
-            }).then((response) => {
-            //   console.log(response)
-              this.jobList = response.data
-            })
-        },
+        // listJobs: function() {
+        //     axios({
+        //         method: "GET",
+        //         url: "http://localhost:8000/bridgehead_app/jobs/",
+        //     }).then((response) => {
+        //     //   console.log(response)
+        //       this.jobList = response.data
+        //     })
+        // },
         searchJobs: function() {
             this.currentSearch = this.inputText
             this.inputText = ""
@@ -294,9 +294,33 @@ const app = new Vue({
                 console.log('error.response.data: ', error.response.data)
             })
         },
-        jobApply: function() {
+        jobApply: function(payload) {
             this.jobCount += 1
-            console.log("added 1 applicant")
+            // console.log("added 1 applicant")
+            console.log("id of applicant", this.currentUser[0].id)
+            console.log("jobby", payload.jobby)
+            let workingCandidateList = payload.jobby.candidate
+            // workingCandidateList.push() - not sure if this is needed
+            workingCandidateList.push(this.currentUser[0].id)
+            console.log("Candidate List", workingCandidateList)
+            axios({
+                method: "PATCH",
+                headers: {
+                    "X-CSRFToken": this.csrfToken
+                },
+                url: `http://localhost:8000/bridgehead_app/job-apply/${payload.jobby.id}/`,
+                data: 
+                    {
+                        "id": payload.jobby.id, 
+                        "candidate": workingCandidateList
+                    }
+                }).then(response => {
+                    console.log("response", response)
+                    console.log("jobApply root response", response.data)
+                }).catch(error => {
+                    console.log('error.response: ', error.response)
+                    console.log('error.response.data: ', error.response.data)
+                })
         },
         getCurrentUser: function() {
             axios({
@@ -306,6 +330,7 @@ const app = new Vue({
               console.log(response)
               this.currentUser = response.data
               console.log("THIS CURRENT USER", this.currentUser)
+              console.log(this.currentUser[0].id)
             }).catch(error => {
             console.log('error.response: ', error.response)
             console.log('error.response.data: ', error.response.data)
@@ -320,5 +345,6 @@ const app = new Vue({
     },
     mounted: function() {
         this.csrfToken = document.querySelector("input[name=csrfmiddlewaretoken]").value
+        this.getCurrentUser()
     }
 })

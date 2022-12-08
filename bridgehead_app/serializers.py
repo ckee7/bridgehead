@@ -15,6 +15,11 @@ class JobSerializer(serializers.ModelSerializer):
         fields = ("__all__")
         model = Job
 
+class JobApplySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ["id", "candidate", "recruiter"]
+        model = Job
+
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ("__all__")

@@ -1,11 +1,12 @@
 from rest_framework import generics, viewsets
-from django.contrib.auth import get_user_model
-from .models import Job
-from .serializers import JobSerializer, UserSerializer, CurrentUserSerializer
-from rest_framework.permissions import IsAuthenticated
-from .permissions import IsRecruiter, IsCandidate
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+from .models import Job
+from .serializers import JobSerializer, UserSerializer, CurrentUserSerializer, JobApplySerializer
+from .permissions import IsRecruiter, IsCandidate
+
 
 class JobViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all()
@@ -32,6 +33,10 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(id=self.request.user.id)
+
+class JobApplyViewSet(viewsets.ModelViewSet):
+    queryset = Job.objects.all()
+    serializer_class = JobApplySerializer
 
 #DISREGARD BELOW
 
