@@ -11,7 +11,16 @@ Vue.component('job-block', {
         <h4>Job Type: {{job.job_type}}</h4>
         <p>Job Description: {{job.job_description}}</p>
         <h5>Job I.D.: {{job.id}}</h5>
-    </li>`
+        <button v-on:click="jobApply">Apply</button>
+    </li>`,
+    methods: {
+        jobApply: function () {
+            console.log("WE are applying for a job!")
+            this.$emit("apply-job-global", {
+                // how do i pass candidate information here to employer
+            }) 
+        }
+    }
 })
 
 Vue.component('create-job-block', {
@@ -140,13 +149,13 @@ Vue.component('list-jobs-block', {
 //     `
 // })
 
-const vue = new Vue({
+const app = new Vue({
     el: "#app1",
     delimiters: ["[[", "]]"], 
     data: {
         showCreateJobBlock: false,
         showEditJobBlock: false, 
-        joblist: [],
+        jobList: [],
         searchJobsList: [],
         singleDetailJob: "",
         updatedJob: "",
@@ -154,6 +163,7 @@ const vue = new Vue({
         currentSearch: "",
         currentUser: "",
         csrfToken: "",
+        jobCount: 0,
         testJob: {
             "job_title": "Entry Level Python Job",
             "job_type": "HE",
@@ -165,10 +175,10 @@ const vue = new Vue({
         getJobs: function() {
             axios({
                 method: "GET",
-                url: "http://localhost:8000/bridgehead_app/",
+                url: "http://localhost:8000/bridgehead_app/jobs/",
             }).then((response) => {
             //   console.log(response)
-              this.joblist = response.data
+              this.jobList = response.data
             })
         },
         toggleCreateJobBlock: function() {
@@ -184,7 +194,7 @@ const vue = new Vue({
                 headers: {
                     "X-CSRFToken": this.csrfToken
                   },
-                url: "http://localhost:8000/bridgehead_app/",
+                url: "http://localhost:8000/bridgehead_app/jobs/",
                 // data: {result},
                 data: {
                     "job_title": payload.job.jobTitle,
@@ -198,7 +208,7 @@ const vue = new Vue({
                 },
             }).then((response) => {
             //   console.log(response)
-            //   this.joblist = response.data
+            //   this.jobList = response.data
                 this.getJobs()
             })
         },
@@ -209,7 +219,7 @@ const vue = new Vue({
                 headers: {
                     "X-CSRFToken": this.csrfToken
                   },
-                url: `http://localhost:8000/bridgehead_app/${payload.job.id}/`,
+                url: `http://localhost:8000/bridgehead_app/jobs/${payload.job.id}/`,
                 data: {
                     "job_title": payload.job.job_title,
                     "job_type": payload.job.job_type,
@@ -231,29 +241,30 @@ const vue = new Vue({
                 headers: {
                     "X-CSRFToken": this.csrfToken
                   },
-                url: `http://localhost:8000/bridgehead_app/${payload.job.id}`,
+                url: `http://localhost:8000/bridgehead_app/jobs/${payload.job.id}`,
             }).then((response) => {
             //   console.log(response)
-            //   this.joblist = response.data
+            //   this.jobList = response.data
                 this.getJobs()
             })
         },
         listJobs: function() {
             axios({
                 method: "GET",
-                url: "http://localhost:8000/bridgehead_app/",
+                url: "http://localhost:8000/bridgehead_app/jobs/",
             }).then((response) => {
             //   console.log(response)
-              this.joblist = response.data
+              this.jobList = response.data
             })
         },
         searchJobs: function() {
             this.currentSearch = this.inputText
             this.inputText = ""
             this.searchJobsList = []
+            this.jobList = ""
             axios({
                 method: "GET",
-                url: "http://localhost:8000/bridgehead_app/search/",
+                url: "http://localhost:8000/bridgehead_app/jobs/search/",
                 params: {
                     q: this.currentSearch
                 },
@@ -274,13 +285,30 @@ const vue = new Vue({
                 headers: {
                     "X-CSRFToken": this.csrfToken
                   },
-                url: `http://localhost:8000/bridgehead_app/${payload.job.id}`,
+                url: `http://localhost:8000/bridgehead_app/jobs/${payload.job.id}`,
             }).then(response => {
               console.log(response.data)
               this.singleDetailJob = response.data
             }).catch(error => {
                 console.log('error.response: ', error.response)
                 console.log('error.response.data: ', error.response.data)
+            })
+        },
+        jobApply: function() {
+            this.jobCount += 1
+            console.log("added 1 applicant")
+        },
+        getCurrentUser: function() {
+            axios({
+                method: "GET",
+                url: "http://localhost:8000/bridgehead_app/current-user/",
+            }).then((response) => {
+              console.log(response)
+              this.currentUser = response.data
+              console.log("THIS CURRENT USER", this.currentUser)
+            }).catch(error => {
+            console.log('error.response: ', error.response)
+            console.log('error.response.data: ', error.response.data)
             })
         }
     },

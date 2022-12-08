@@ -1,6 +1,7 @@
 from rest_framework import generics, viewsets
+from django.contrib.auth import get_user_model
 from .models import Job
-from .serializers import JobSerializer
+from .serializers import JobSerializer, UserSerializer, CurrentUserSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsRecruiter, IsCandidate
 from rest_framework.decorators import action
@@ -13,11 +14,24 @@ class JobViewSet(viewsets.ModelViewSet):
     def search(self, request):
         keyword = request.query_params["q"]
         queryset = Job.objects.filter(job_description__contains=keyword)
-        return Response(queryset)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+        # return Response(queryset)
         print(request)
         print(request.query_params)
         print(request.query_params["q"])
     # permission_classes = [IsAuthenticated, IsRecruiter, IsCandidate]
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+
+class CurrentUserViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = CurrentUserSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(id=self.request.user.id)
 
 #DISREGARD BELOW
 
