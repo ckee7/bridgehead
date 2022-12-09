@@ -200,7 +200,7 @@ const app = new Vue({
                     "job_title": payload.job.jobTitle,
                     "job_type": payload.job.jobType,
                     "job_description": payload.job.jobDescription,
-                    "recruiter": payload.job.recruiter,
+                    "recruiter": this.currentUser[0].id,
                     // "job_title": "Entry Level Python Job",
                     // "job_type": "HE",
                     // "job_description": "Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.",
@@ -331,6 +331,15 @@ const app = new Vue({
               this.currentUser = response.data
               console.log("THIS CURRENT USER", this.currentUser)
               console.log(this.currentUser[0].id)
+
+              let isRecruiter = this.currentUser[0].recruiter
+              console.log("USER IS RECRUTER", isRecruiter)
+            if (isRecruiter) {
+                this.jobList = this.currentUser[0].job_detail
+            } else {
+                this.getJobs()
+            }
+              
             }).catch(error => {
             console.log('error.response: ', error.response)
             console.log('error.response.data: ', error.response.data)

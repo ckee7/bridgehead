@@ -34,7 +34,7 @@ class Job(models.Model):
     job_description = models.TextField(max_length=2500)
     created_at = models.DateTimeField(auto_now_add=True)
     recruiter = models.ForeignKey(AUTH_USER_MODEL, related_name="jobs", on_delete=models.CASCADE)
-    candidate = models.ManyToManyField(AUTH_USER_MODEL, related_name="candidate_jobs", blank=True)
+    candidate = models.ManyToManyField(AUTH_USER_MODEL, blank=True)
 
     def __str__(self):
         return str(self.id) + ", " + self.job_title

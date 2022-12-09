@@ -10,20 +10,21 @@ class EmployerSerializer(serializers.ModelSerializer):
         fields = ("__all__")
         model = Employer
 
-class JobSerializer(serializers.ModelSerializer):
+class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ("__all__")
+        model = Candidate
+
+class JobSerializer(serializers.ModelSerializer):
+    candidates_detail = CandidateSerializer(read_only=True, many=True, source="candidates")
+    class Meta:
+        fields = ["job_title", "job_type", "job_description", "candidates_detail", "id", "candidate", "recruiter"]
         model = Job
 
 class JobApplySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ["id", "candidate", "recruiter"]
         model = Job
-
-class CandidateSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ("__all__")
-        model = Candidate
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     job_detail = JobSerializer(read_only=True, many=True, source="jobs")
