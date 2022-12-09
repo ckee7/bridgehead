@@ -110,7 +110,7 @@ Vue.component('list-jobs-block', {
 
         }
     },
-    props: ['job'],
+    props: ['job', 'candidates'],
     template: 
     `
     <div>
@@ -122,7 +122,11 @@ Vue.component('list-jobs-block', {
             <p>Job Description: {{job.job_description}}</p>
             <button @click="editComponentJob">Edit Job</button>
             <button @click="deleteComponentJob">Delete Job</button>
+            <button @click="showApplicants">Show Applicants</button>
         </li>
+            <p v-for="candidate in candidates">
+                {{candidate}} 
+            </p>
     </div>
     `,
     methods: {
@@ -138,6 +142,12 @@ Vue.component('list-jobs-block', {
                 job: this.job
             })
         },
+        showApplicants: function () {
+            console.log("WE have Applicants!")
+            this.$emit("applicants-job-global", {
+                job: this.job
+            })
+        },
     }
 })
 
@@ -150,17 +160,21 @@ Vue.component('list-jobs-block', {
 //     props: ['job'],
 //     template: 
 //     `<li>
-//         <h4>Job Title: {{job.job_title}}</h4>
-//         <h4>Job Type: {{job.job_type}}</h4>
-//         <p>Job Description: {{job.job_description}}</p>
-//         <h5>Applicant(s): 
+//         <h4>Applicant(s): </h4>
+//         <p>{{job.first_name}}</p>
+//         <p>{{job.last_name}}</p>
+//         <p>{{job.username}}</p>
+//         <p>{{job.email}}</p>
 //     </li>`,
 //     methods: {
-//    
+   
 //         }
-//     }
+    
 // })
 
+
+
+// NOT IN USE
 // Vue.component('the-component-name', {
 //     template: `
 //     <p>
@@ -177,7 +191,9 @@ const app = new Vue({
         showEditJobBlock: false, 
         jobList: [],
         searchJobsList: [],
+        candidates: [],
         singleDetailJob: "",
+        candy: "",
         updatedJob: "",
         inputText: "",
         currentSearch: "",
@@ -364,7 +380,23 @@ const app = new Vue({
             console.log('error.response: ', error.response)
             console.log('error.response.data: ', error.response.data)
             })
-        }
+        },
+        showJobApplicants: function(payload) {
+            console.log("Applicants", payload)
+            axios({
+                method: "GET",
+                // headers: {
+                //     "X-CSRFToken": this.csrfToken
+                //   },
+                url: `http://localhost:8000/bridgehead_app/recruiter-job/${payload.job.id}/`,
+            }).then((response) => {
+            console.log("Applicant response", response)
+              this.candy = response.data.candidate
+            }).catch(error => {
+                console.log('error.response: ', error.response)
+                console.log('error.response.data: ', error.response.data)
+            })
+        },
     },
     computed: {
 

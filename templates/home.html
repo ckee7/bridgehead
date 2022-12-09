@@ -31,11 +31,18 @@
             <list-jobs-block 
             v-for="job in jobList" 
             v-bind:job="job" 
+            v-bind:candidates="candy"
             v-bind:key="job.id"
             @edit-job-global = "showDetailJobView"
-            @delete-job-global = "deleteJob">
+            @delete-job-global = "deleteJob"
+            @applicants-job-global = "showJobApplicants">
             </list-jobs-block>
         </ul>
+    {% comment %} <applicant-block
+        v-if="applicants"
+        v-bind:job
+        >
+    </applicant-block> {% endcomment %}
     </div>
 {% elif user.is_authenticated %}
     <h2>Hi {{ user.username }}!</h2>
