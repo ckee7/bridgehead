@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from .models import Job
-from .serializers import JobSerializer, UserSerializer, CurrentUserSerializer, JobApplySerializer
+from .serializers import JobSerializer, UserSerializer, CurrentUserSerializer, JobApplySerializer, RecruiterCandidateSerializer, RecruiterJobSerializer
 from .permissions import IsRecruiter, IsCandidate
 
 
@@ -37,6 +37,14 @@ class CurrentUserViewSet(viewsets.ModelViewSet):
 class JobApplyViewSet(viewsets.ModelViewSet):
     queryset = Job.objects.all()
     serializer_class = JobApplySerializer
+
+class RecruiterCandidateViewSet(viewsets.ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = RecruiterCandidateSerializer
+
+class RecruiterJobViewSet(viewsets.ModelViewSet):
+    queryset = Job.objects.all()
+    serializer_class = RecruiterJobSerializer
 
 #DISREGARD BELOW
 

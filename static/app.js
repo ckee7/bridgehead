@@ -141,6 +141,26 @@ Vue.component('list-jobs-block', {
     }
 })
 
+// Vue.component('applicant-block', {
+//     data: function() {
+//         return {
+
+//         }
+//     },
+//     props: ['job'],
+//     template: 
+//     `<li>
+//         <h4>Job Title: {{job.job_title}}</h4>
+//         <h4>Job Type: {{job.job_type}}</h4>
+//         <p>Job Description: {{job.job_description}}</p>
+//         <h5>Applicant(s): 
+//     </li>`,
+//     methods: {
+//    
+//         }
+//     }
+// })
+
 // Vue.component('the-component-name', {
 //     template: `
 //     <p>

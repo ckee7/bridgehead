@@ -12,8 +12,22 @@ class EmployerSerializer(serializers.ModelSerializer):
 
 class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("__all__")
+        # fields = ("__all__")
+        fields = ["id", "created_at"]
         model = Candidate
+
+
+class RecruiterCandidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ["id", "username", "first_name", "last_name", "email"]
+        model = get_user_model()
+
+class RecruiterJobSerializer(serializers.ModelSerializer):
+    candidate = RecruiterCandidateSerializer(read_only=True, many=True)
+    class Meta:
+        fields = ["id", "job_title", "job_type", "candidate"]
+        model = Job
+
 
 class JobSerializer(serializers.ModelSerializer):
     candidates_detail = CandidateSerializer(read_only=True, many=True, source="candidates")
