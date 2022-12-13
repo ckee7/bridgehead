@@ -1,4 +1,4 @@
-/* standard code */
+/* standard border-box code */
 html {
     box-sizing: border-box;
 }
@@ -8,8 +8,31 @@ html {
 /* end of standard code */
 
 body {
-    background-color: beige;
+    background-color: #FFF9F0;
+    margin: 0;
+}
+
+header {
+    background-color: #B6C8D9;
+    font-family: 'Poppins', sans-serif;
+}
+
+nav {
+    text-align: center;
+}
+
+main {
+    background-color: #FFF9F0;
     font-family: 'Poppins', sans-serif;
     font-weight: 800;
+}
+
+header, main, footer {
     padding: 2em;
+}
+
+footer {
+    background-color: #B6C8D9;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
 }

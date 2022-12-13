@@ -4,52 +4,76 @@
 
 {% block content %}
 {% csrf_token %}
-    <div id="app1">
+<div id="app1">
 {% if user.recruiter %}
-    <h2>Hi {{ user.username }}!</h2>
-    <p><a href={% url "home" %}>Home</a>
-        <a href="{% url 'logout' %}">Log Out</a></p>
-    <h3>Would you like to create a Job?</h3>
-    {% comment %} <the-component-name></the-component-name> {% endcomment %}
-    <button @click="toggleCreateJobBlock" v-if="!showCreateJobBlock">Create a Job</button>
-    <button @click="toggleCreateJobBlock" v-if="showCreateJobBlock">Hide Create</button>
-    <div>
-        <create-job-block 
-            @create-job-global = "createJob"
-            v-if="showCreateJobBlock"
-        > </create-job-block>
-    </div>
-    {% comment %} <button @click=showDetailJobView>Show Edit</button> [[ showEditJobBlock ]] {% endcomment %}
-    <update-job-block 
-        v-if="showEditJobBlock"
-        v-bind:single-job=singleDetailJob
-        @edit-single-job-global = "updateJob">
-    </update-job-block>
-    <div v-if="jobList.length">
-        <h3>Jobs Posting</h3>
-        <ul>
-            <list-jobs-block 
-            v-for="job in jobList" 
-            v-bind:job="job" 
-            v-bind:candidates="candy"
-            v-bind:key="job.id"
-            @edit-job-global = "showDetailJobView"
-            @delete-job-global = "deleteJob"
-            @applicants-job-global = "showJobApplicants">
-            </list-jobs-block>
-        </ul>
-    {% comment %} <applicant-block
-        v-if="applicants"
-        v-bind:job
-        >
-    </applicant-block> {% endcomment %}
-    </div>
+    <header>
+        <nav>
+            <h3>Welcome to Accel</h3>
+            <p><a href={% url "home" %}>Home</a></p>
+            <p><a href="{% url 'logout' %}">Log Out</a></p>
+        </nav>
+    </header>
+    <main>
+        <h2>Hi {{ user.username }}!</h2>
+        <div>
+            <h3>Would you like to create a Job?</h3>
+            {% comment %} <the-component-name></the-component-name> {% endcomment %}
+            <button @click="toggleCreateJobBlock" v-if="!showCreateJobBlock">Create a Job</button>
+            <button @click="toggleCreateJobBlock" v-if="showCreateJobBlock">Hide Create</button>
+        </div>
+        <div>
+            <create-job-block 
+                @create-job-global = "createJob"
+                v-if="showCreateJobBlock"> 
+            </create-job-block>
+        </div>
+        {% comment %} <button @click=showDetailJobView>Show Edit</button> [[ showEditJobBlock ]] {% endcomment %}
+        <div>
+            <update-job-block 
+                v-if="showEditJobBlock"
+                v-bind:single-job=singleDetailJob
+                v-bind:candidates="candy"
+                @edit-single-job-global = "updateJob"
+                @delete-job-global = "deleteJob"
+                @applicants-job-global = "getJobApplicants">
+            </update-job-block>
+        </div>
+        <div v-if="currentSlice.length">
+            <h3>Jobs Posting</h3>
+            <div>
+                <button @click=>Previous Page</button>
+                <button @click="getNextPage">Next Page</button>
+            </div>
+            <ul>
+                <list-jobs-block 
+                v-for="job in currentSlice" 
+                v-bind:job="job" 
+                v-bind:candidates="candy"
+                v-bind:key="job.id"
+                @edit-job-global = "showDetailJobView">
+                </list-jobs-block>
+            </ul>
+        </div>
+    </main>
+    <footer>
+        <p>email: recruit@acelitas.co</p>
+        <li>Washington D.C.</li>
+        <li>Los Angeles</li>
+    </footer>
 {% elif user.is_authenticated %}
-    <h2>Hi {{ user.username }}!</h2>
-    <p><a href={% url "home" %}>Home</a>
-        <a href="{% url 'logout' %}">Log Out</a></p>
-        <input type="text" v-model="inputText" size="50">
-        <button v-on:click="searchJobs">Search Keyword</button>
+    <header>
+        <nav>
+            <h3>Welcome to Accel</h3>
+            <p><a href={% url "home" %}>Home</a></p>
+            <p><a href="{% url 'logout' %}">Log Out</a></p>
+        </nav>
+    </header>
+    <main>
+        <h2>Hi {{ user.username }}!</h2>
+        <div>
+            <input type="text" v-model="inputText" size="50">
+            <button v-on:click="searchJobs">Search Keyword</button>
+        </div>
         <div v-if="searchJobsList.length">
             <h3>This is your search term: [[ currentSearch ]]</h3>
             <ul>
@@ -61,21 +85,36 @@
                 </job-block>
             </ul>
         </div>
-        <div v-if="jobList.length">
+        <div v-if="currentSlice.length">
             <h3>Job List</h3>
+            <div>
+                <button @click=>Previous Page</button>
+                <button @click="getNextPage">Next Page</button>
+            </div>
             <ul>
                 <job-block 
-                v-for="job in jobList" 
+                v-for="job in currentSlice" 
                 v-bind:job="job" 
                 v-bind:key="job.id"
                 @apply-job-global = "jobApply">
                 </job-block>
             </ul>
         </div>
+    </main>
+    <footer>
+        <p>email: recruit@acelitas.co</p>
+        <li>Washington D.C.</li>
+        <li>Los Angeles</li>
+    </footer>
 {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a> |
-    <a href="{% url 'signup' %}">Sign Up</a>
+    <header>
+        <p>You are not logged in</p>
+    </header>
+    <main>
+        <p>Please log in or sign up for an account</p>
+        <a href="{% url 'login' %}">Log In</a> |
+        <a href="{% url 'signup' %}">Sign Up</a>
+    <main>
 {% endif %}
-    </div>
+</div>
 {% endblock %}

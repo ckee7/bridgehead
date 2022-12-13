@@ -69,15 +69,14 @@ Vue.component('create-job-block', {
 Vue.component('update-job-block', {
     data: function() {
         return {
-            job: ""
+            job: "",
+            showApplicants: false
         }
     },
-    props: ['singleJob'],
+    props: ['singleJob', 'candidates'],
     template:
     `
     <div>
-        <h4>Update Job Here</h4>
-        {{ singleJob }}
         <p>Please enter a Job Title</p>
         <input type="text" v-model="singleJob.job_title" size="50">
         <p>Please select a Job Type</p>
@@ -92,12 +91,34 @@ Vue.component('update-job-block', {
         <p>Please enter a Job Description</p>
         <textarea v-model="singleJob.job_description" rows="7" cols="40"></textarea><br>
         <button @click="editSingleJob">Edit & Save</button>
+        <button @click="deleteComponentJob">Delete Job</button>
+        <button @click="getApplicants" v-if="!showApplicants">Get Applicants</button>
+        <button @click="getApplicants" v-if="showApplicants">Hide Applicants</button>
+        <div v-if="showApplicants">
+            <ul v-for="candidate in candidates">
+                <h4>Applicants:</h4>
+                <li>{{candidate.first_name}} {{candidate.last_name}}: {{candidate.email}}</li>
+            </ul>
+        </div>
     </div>
     `,
     methods: {
         editSingleJob: function () {
             console.log("We are UPDATING a job!")
             this.$emit("edit-single-job-global", {
+                job: this.singleJob
+            })
+        },
+        deleteComponentJob: function () {
+            console.log("We are DELETING a job!")
+            this.$emit("delete-job-global", {
+                job: this.singleJob
+            })
+        },
+        getApplicants: function () {
+            console.log("WE have Applicants!")
+            this.showApplicants = !this.showApplicants
+            this.$emit("applicants-job-global", {
                 job: this.singleJob
             })
         },
@@ -120,9 +141,7 @@ Vue.component('list-jobs-block', {
             <h5>Recruiter: {{job.recruiter}}</h5>
             <h5>Job I.D.: {{job.id}}</h5>
             <p>Job Description: {{job.job_description}}</p>
-            <button @click="editComponentJob">Edit Job</button>
-            <button @click="deleteComponentJob">Delete Job</button>
-            <button @click="showApplicants">Show Applicants</button>
+            <button @click="editComponentJob">Detail Job View</button>
         </li>
             <p v-for="candidate in candidates">
                 {{candidate}} 
@@ -133,18 +152,6 @@ Vue.component('list-jobs-block', {
         editComponentJob: function () {
             console.log("We are EDITING a job!")
             this.$emit("edit-job-global", {
-                job: this.job
-            })
-        },
-        deleteComponentJob: function () {
-            console.log("We are DELETING a job!")
-            this.$emit("delete-job-global", {
-                job: this.job
-            })
-        },
-        showApplicants: function () {
-            console.log("WE have Applicants!")
-            this.$emit("applicants-job-global", {
                 job: this.job
             })
         },
@@ -192,6 +199,16 @@ const app = new Vue({
         jobList: [],
         searchJobsList: [],
         candidates: [],
+
+        currentPage: 1,
+        numberOfItemsPerPage: 2,
+
+        currentSlice: "",
+        currentSliceIndex: 0,
+        firstSlice: "",
+        secondSlice: "",
+        thirdSlice: "",
+
         singleDetailJob: "",
         candy: "",
         updatedJob: "",
@@ -222,6 +239,7 @@ const app = new Vue({
             this.showCreateJobBlock = !this.showCreateJobBlock
         },
         createJob: function(payload) { 
+            this.showCreateJobBlock = false
             console.log("payload", payload)
             console.log("payload.job", payload.job)
             console.log("payload.job.jobTitle", payload.job.jobTitle)
@@ -245,7 +263,7 @@ const app = new Vue({
             }).then((response) => {
             //   console.log(response)
             //   this.jobList = response.data
-                this.getJobs()
+                this.getCurrentUser()
             })
         },
         updateJob: function(payload) {
@@ -271,7 +289,8 @@ const app = new Vue({
             })
         },
         deleteJob: function(payload) {
-            console.log(payload)
+            this.showEditJobBlock = false
+            console.log("Deleting!", payload)
             axios({
                 method: "DELETE",
                 headers: {
@@ -281,7 +300,7 @@ const app = new Vue({
             }).then((response) => {
             //   console.log(response)
             //   this.jobList = response.data
-                this.getJobs()
+                 this.getCurrentUser()
             })
         },
         // listJobs: function() {
@@ -293,6 +312,26 @@ const app = new Vue({
         //       this.jobList = response.data
         //     })
         // },
+        getNextPage: function() {
+            this.currentSliceIndex = this.currentSliceIndex + this.numberOfItemsPerPage
+            let beginning = this.currentSliceIndex
+            let end = beginning + this.numberOfItemsPerPage
+            // this.currentPage++
+            this.currentSlice = this.jobList.slice(beginning, end)
+            // this.firstSlice = this.jobList.slice(0, 3) //indices 0,1,2
+            // this.secondSlice = this.jobList.slice(3, 6)
+            // this.thirdSlice = this.jobList.slice(6, 9)
+        },
+        getPreviousPage: function() {
+            this.currentSliceIndex = this.currentSliceIndex - this.numberOfItemsPerPage
+            let beginning = this.currentSliceIndex
+            let end = beginning - this.numberOfItemsPerPage
+            // this.currentPage++
+            this.currentSlice = this.jobList.slice(beginning, end)
+            // this.firstSlice = this.jobList.slice(0, 3) //indices 0,1,2
+            // this.secondSlice = this.jobList.slice(3, 6)
+            // this.thirdSlice = this.jobList.slice(6, 9)
+        }, 
         searchJobs: function() {
             this.currentSearch = this.inputText
             this.inputText = ""
@@ -313,6 +352,7 @@ const app = new Vue({
             })
         },
         showDetailJobView: function(payload) {
+            this.jobList = ""
             console.log("Showing Detail of Job")
             // console.log(payload.job)
             this.showEditJobBlock = true
@@ -372,8 +412,10 @@ const app = new Vue({
               console.log("USER IS RECRUTER", isRecruiter)
             if (isRecruiter) {
                 this.jobList = this.currentUser[0].job_detail
+                this.currentSlice = this.jobList.slice(0, this.numberOfItemsPerPage)
             } else {
                 this.getJobs()
+                this.currentSlice = this.jobList.slice(0, this.numberOfItemsPerPage)
             }
               
             }).catch(error => {
@@ -381,7 +423,7 @@ const app = new Vue({
             console.log('error.response.data: ', error.response.data)
             })
         },
-        showJobApplicants: function(payload) {
+        getJobApplicants: function(payload) {
             console.log("Applicants", payload)
             axios({
                 method: "GET",

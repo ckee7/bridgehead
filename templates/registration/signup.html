@@ -3,11 +3,18 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<a href={% url "home" %}>Home</a>
-<h2>Sign Up</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
-</form>
+<header>
+    <nav>
+        <a href={% url "home" %}>Home</a>
+    </nav>
+</header>
+<main>
+    <h2>Welcome to Accel</h2>
+    <h3>Please Sign Up</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign Up</button>
+    </form>
+</main>
 {% endblock %}
