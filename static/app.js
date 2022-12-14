@@ -196,13 +196,14 @@ const app = new Vue({
     data: {
         showCreateJobBlock: false,
         showEditJobBlock: false, 
+        currentSliceDisplay: true,
         jobList: [],
         searchJobsList: [],
         candidates: [],
 
         currentPage: 1,
-        numberOfItemsPerPage: 2,
-
+        numberOfItemsPerPage: 3,
+        jobsRemaining: 0,
         currentSlice: "",
         currentSliceIndex: 0,
         firstSlice: "",
@@ -283,6 +284,9 @@ const app = new Vue({
             }).then((response) => {
             console.log("update job method", response)
               this.updatedJob = response.data
+              this.getCurrentUser()
+              this.showEditJobBlock = false
+              this.currentSliceDisplay = true
             }).catch(error => {
                 console.log('error.response: ', error.response)
                 console.log('error.response.data: ', error.response.data)
@@ -301,6 +305,7 @@ const app = new Vue({
             //   console.log(response)
             //   this.jobList = response.data
                  this.getCurrentUser()
+                 this.currentSliceDisplay = true
             })
         },
         // listJobs: function() {
@@ -318,6 +323,9 @@ const app = new Vue({
             let end = beginning + this.numberOfItemsPerPage
             // this.currentPage++
             this.currentSlice = this.jobList.slice(beginning, end)
+            this.jobsRemaining -= this.currentSlice.length
+            console.log("joblist length", this.jobList.length)
+            console.log("jobremaining", this.jobsRemaining)
             // this.firstSlice = this.jobList.slice(0, 3) //indices 0,1,2
             // this.secondSlice = this.jobList.slice(3, 6)
             // this.thirdSlice = this.jobList.slice(6, 9)
@@ -325,9 +333,12 @@ const app = new Vue({
         getPreviousPage: function() {
             this.currentSliceIndex = this.currentSliceIndex - this.numberOfItemsPerPage
             let beginning = this.currentSliceIndex
-            let end = beginning - this.numberOfItemsPerPage
+            let end = beginning + this.numberOfItemsPerPage
             // this.currentPage++
             this.currentSlice = this.jobList.slice(beginning, end)
+            this.jobsRemaining += this.currentSlice.length
+            console.log("joblist length", this.jobList.length)
+            console.log("jobremaining", this.jobsRemaining)
             // this.firstSlice = this.jobList.slice(0, 3) //indices 0,1,2
             // this.secondSlice = this.jobList.slice(3, 6)
             // this.thirdSlice = this.jobList.slice(6, 9)
@@ -352,7 +363,8 @@ const app = new Vue({
             })
         },
         showDetailJobView: function(payload) {
-            this.jobList = ""
+            this.jobList = "" //may need to get rid of this
+            this.currentSliceDisplay = false
             console.log("Showing Detail of Job")
             // console.log(payload.job)
             this.showEditJobBlock = true
@@ -413,9 +425,15 @@ const app = new Vue({
             if (isRecruiter) {
                 this.jobList = this.currentUser[0].job_detail
                 this.currentSlice = this.jobList.slice(0, this.numberOfItemsPerPage)
+                this.jobsRemaining = Math.max(this.jobList.length - 3, 0) 
+                console.log("joblist length", this.jobList.length)
+                console.log("jobremaining", this.jobsRemaining)
             } else {
                 this.getJobs()
                 this.currentSlice = this.jobList.slice(0, this.numberOfItemsPerPage)
+                this.jobsRemaining = Math.max(this.jobList.length - 3, 0)
+                console.log("joblist length", this.jobList.length)
+                console.log("jobremaining", this.jobsRemaining)
             }
               
             }).catch(error => {

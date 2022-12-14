@@ -38,11 +38,13 @@
                 @applicants-job-global = "getJobApplicants">
             </update-job-block>
         </div>
-        <div v-if="currentSlice.length">
+        <div v-if="currentSlice.length && currentSliceDisplay">
             <h3>Jobs Posting</h3>
             <div>
-                <button @click=>Previous Page</button>
-                <button @click="getNextPage">Next Page</button>
+                <p>Number of Items: [[currentSlice.length]]</p>
+                <p>Total Jobs: [[jobList.length]]</p>
+                <button @click="getPreviousPage" v-if="jobsRemaining >= 0">Previous Page</button>
+                <button @click="getNextPage" v-if="jobsRemaining > 0">Next Page</button>
             </div>
             <ul>
                 <list-jobs-block 
@@ -85,11 +87,13 @@
                 </job-block>
             </ul>
         </div>
-        <div v-if="currentSlice.length">
+        <div v-if="currentSlice.length && currentSliceDisplay">
             <h3>Job List</h3>
             <div>
-                <button @click=>Previous Page</button>
-                <button @click="getNextPage">Next Page</button>
+                <p>Number of Items: [[currentSlice.length]]</p>
+                {% comment %} <p>Total Jobs: [[jobList.length]]</p> {% endcomment %}
+                <button @click="getPreviousPage" v-if="jobsRemaining <= 0">Previous Page</button>
+                <button @click="getNextPage" v-if="jobsRemaining > 0">Next Page</button>
             </div>
             <ul>
                 <job-block 
