@@ -42,7 +42,7 @@
             <h3>Jobs Posting</h3>
             <div>
                 <p>Total Jobs: [[jobList.length]]</p>
-                <p>Number of Items: [[currentSlice.length]]</p>
+                {% comment %} <p>Number of Items: [[currentSlice.length]]</p> {% endcomment %}
                 <button @click="getPreviousPage" v-if="jobsRemaining < 3">Previous Page</button>
                 <button @click="getNextPage" v-if="jobsRemaining > 0">Next Page</button>
             </div>
