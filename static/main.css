@@ -36,3 +36,15 @@ footer {
     text-align: center;
     font-family: 'Poppins', sans-serif;
 }
+
+.response {
+    color: green;
+}
+
+.searchlist{
+    list-style-type: none;
+}
+
+.list{
+    list-style-type: none;
+}

@@ -4,14 +4,18 @@ Vue.component('job-block', {
 
         }
     },
-    props: ['job'],
+    props: ['job', 'currentUser'],
     template: 
     `<li>
-        <h4>Job Title: {{job.job_title}}</h4>
+        <h3 class="headline"><u>Job Title: {{job.job_title}}</u></h3>
         <h4>Job Type: {{job.job_type}}</h4>
         <p>Job Description: {{job.job_description}}</p>
         <h5>Job I.D.: {{job.id}}</h5>
-        <button v-on:click="jobApply(job)">Apply</button>
+        <button v-on:click="jobApply(job)"  v-if="!job.candidate.includes(currentUser[0].id)">Apply</button>
+        <!-- <p>{{job.candidate}}</p>
+        <p>{{currentUser[0].id}}</p>
+        <p>{{job.candidate.includes(currentUser[0].id)}}</p> -->
+        <p class="response" v-if="job.candidate.includes(currentUser[0].id)">You have applied for this job!</p>
     </li>`,
     methods: {
         jobApply: function (localJobVar) {
@@ -95,8 +99,8 @@ Vue.component('update-job-block', {
         <button @click="getApplicants" v-if="!showApplicants">Get Applicants</button>
         <button @click="getApplicants" v-if="showApplicants">Hide Applicants</button>
         <div v-if="showApplicants">
+            <h4>Applicants:</h4>
             <ul v-for="candidate in candidates">
-                <h4>Applicants:</h4>
                 <li>{{candidate.first_name}} {{candidate.last_name}}: {{candidate.email}}</li>
             </ul>
         </div>
@@ -178,8 +182,6 @@ Vue.component('list-jobs-block', {
 //         }
     
 // })
-
-
 
 // NOT IN USE
 // Vue.component('the-component-name', {
@@ -331,6 +333,7 @@ const app = new Vue({
             this.jobsRemaining -= this.currentSlice.length
             console.log("joblist length", this.jobList.length)
             console.log("jobremaining", this.jobsRemaining)
+            console.log("currentSliceNEXT", this.currentSlice.length)
             // this.firstSlice = this.jobList.slice(0, 3) //indices 0,1,2
             // this.secondSlice = this.jobList.slice(3, 6)
             // this.thirdSlice = this.jobList.slice(6, 9)
@@ -339,11 +342,13 @@ const app = new Vue({
             this.currentSliceIndex = this.currentSliceIndex - this.numberOfItemsPerPage
             let beginning = this.currentSliceIndex
             let end = beginning + this.numberOfItemsPerPage
+            // this.numberOfItemsPerPage = this.currentSlice.length
             // this.currentPage++
             this.currentSlice = this.jobList.slice(beginning, end)
             this.jobsRemaining += this.currentSlice.length
             console.log("joblist length", this.jobList.length)
             console.log("jobremaining", this.jobsRemaining)
+            console.log("currentSlicePREVIOUS", this.currentSlice.length)
             // this.firstSlice = this.jobList.slice(0, 3) //indices 0,1,2
             // this.secondSlice = this.jobList.slice(3, 6)
             // this.thirdSlice = this.jobList.slice(6, 9)
@@ -362,6 +367,7 @@ const app = new Vue({
             }).then((response) => {
             console.log(response.data)
               this.searchJobsList = response.data
+              this.currentSlice = ""
             }).catch(error => {
                 console.log('error.response: ', error.response)
             })

@@ -49,3 +49,5 @@ class Candidate(models.Model):
     
     def __str__(self):
         return self.candidate_last_name + ", " + self.candidate_first_name
+
+# candidate model - 
