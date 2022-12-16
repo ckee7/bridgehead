@@ -210,6 +210,7 @@ const app = new Vue({
         secondSlice: "",
         thirdSlice: "",
 
+        thisAppliedJob: "",
         singleDetailJob: "",
         candy: "",
         updatedJob: "",
@@ -233,6 +234,10 @@ const app = new Vue({
             }).then((response) => {
             //   console.log(response)
               this.jobList = response.data
+              this.currentSlice = this.jobList.slice(0, this.numberOfItemsPerPage)
+              this.jobsRemaining = Math.max(this.jobList.length - 3, 0)
+              console.log("joblist length", this.jobList.length)
+              console.log("jobremaining", this.jobsRemaining)
             })
         },
         toggleCreateJobBlock: function() {
@@ -289,7 +294,6 @@ const app = new Vue({
               this.currentSliceDisplay = true
             }).catch(error => {
                 console.log('error.response: ', error.response)
-                console.log('error.response.data: ', error.response.data)
             })
         },
         deleteJob: function(payload) {
@@ -323,6 +327,7 @@ const app = new Vue({
             let end = beginning + this.numberOfItemsPerPage
             // this.currentPage++
             this.currentSlice = this.jobList.slice(beginning, end)
+            this.numberOfItemsPerPage = this.currentSlice.length
             this.jobsRemaining -= this.currentSlice.length
             console.log("joblist length", this.jobList.length)
             console.log("jobremaining", this.jobsRemaining)
@@ -359,7 +364,6 @@ const app = new Vue({
               this.searchJobsList = response.data
             }).catch(error => {
                 console.log('error.response: ', error.response)
-                console.log('error.response.data: ', error.response.data)
             })
         },
         showDetailJobView: function(payload) {
@@ -379,7 +383,6 @@ const app = new Vue({
               this.singleDetailJob = response.data
             }).catch(error => {
                 console.log('error.response: ', error.response)
-                console.log('error.response.data: ', error.response.data)
             })
         },
         jobApply: function(payload) {
@@ -403,11 +406,14 @@ const app = new Vue({
                         "candidate": workingCandidateList
                     }
                 }).then(response => {
-                    console.log("response", response)
-                    console.log("jobApply root response", response.data)
+                    // get job with payload of payload.jobby.id from job list
+                    let theIndex = this.jobList.indexOf(payload.jobby)
+                    console.log(payload.jobby)
+                    console.log("the index", theIndex)
+                    // console.log("response", response)
+                    // console.log("jobApply root response", response.data)
                 }).catch(error => {
-                    console.log('error.response: ', error.response)
-                    console.log('error.response.data: ', error.response.data)
+                    console.log('JobApply error.response: ', error.response)
                 })
         },
         getCurrentUser: function() {
@@ -430,15 +436,9 @@ const app = new Vue({
                 console.log("jobremaining", this.jobsRemaining)
             } else {
                 this.getJobs()
-                this.currentSlice = this.jobList.slice(0, this.numberOfItemsPerPage)
-                this.jobsRemaining = Math.max(this.jobList.length - 3, 0)
-                console.log("joblist length", this.jobList.length)
-                console.log("jobremaining", this.jobsRemaining)
             }
-              
             }).catch(error => {
             console.log('error.response: ', error.response)
-            console.log('error.response.data: ', error.response.data)
             })
         },
         getJobApplicants: function(payload) {
@@ -454,7 +454,6 @@ const app = new Vue({
               this.candy = response.data.candidate
             }).catch(error => {
                 console.log('error.response: ', error.response)
-                console.log('error.response.data: ', error.response.data)
             })
         },
     },

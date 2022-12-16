@@ -41,9 +41,9 @@
         <div v-if="currentSlice.length && currentSliceDisplay">
             <h3>Jobs Posting</h3>
             <div>
-                <p>Number of Items: [[currentSlice.length]]</p>
                 <p>Total Jobs: [[jobList.length]]</p>
-                <button @click="getPreviousPage" v-if="jobsRemaining >= 0">Previous Page</button>
+                <p>Number of Items: [[currentSlice.length]]</p>
+                <button @click="getPreviousPage" v-if="jobsRemaining < 3">Previous Page</button>
                 <button @click="getNextPage" v-if="jobsRemaining > 0">Next Page</button>
             </div>
             <ul>
@@ -58,7 +58,7 @@
         </div>
     </main>
     <footer>
-        <p>email: recruit@acelitas.co</p>
+        <p>email: recruit@accel.co</p>
         <li>Washington D.C.</li>
         <li>Los Angeles</li>
     </footer>
@@ -88,11 +88,13 @@
             </ul>
         </div>
         <div v-if="currentSlice.length && currentSliceDisplay">
-            <h3>Job List</h3>
+            <h3> Candidate Job List</h3>
             <div>
                 <p>Number of Items: [[currentSlice.length]]</p>
                 {% comment %} <p>Total Jobs: [[jobList.length]]</p> {% endcomment %}
-                <button @click="getPreviousPage" v-if="jobsRemaining <= 0">Previous Page</button>
+                <button @click="getPreviousPage" v-if="jobsRemaining < 3">Previous Page</button> 
+                {% comment %} <p>Job before this [[jobList.length - jobsRemaining]]</p> {% endcomment %}
+                {% comment %} length of jobs - jobs remaining >= 0  {% endcomment %}
                 <button @click="getNextPage" v-if="jobsRemaining > 0">Next Page</button>
             </div>
             <ul>
@@ -103,10 +105,11 @@
                 @apply-job-global = "jobApply">
                 </job-block>
             </ul>
+
         </div>
     </main>
     <footer>
-        <p>email: recruit@acelitas.co</p>
+        <p>email: recruit@accel.co</p>
         <li>Washington D.C.</li>
         <li>Los Angeles</li>
     </footer>
